@@ -229,7 +229,7 @@ class MyScene extends THREE.Scene {
   }
   
   
-  onMouseMove (event){
+  onMouseMove (event) {
     var actual = this.getMouse(event)
     //derecha
     if (actual > X_ant ){
@@ -246,7 +246,14 @@ class MyScene extends THREE.Scene {
     }
       X_ant = actual;
   }
-  
+
+  onMouseClick (event) {
+    switch(event.which) {
+      case 1:
+        this.personaje.position.x += 3;
+        this.camera.position.x += 3;
+    }
+  }
 }
 
 var X_ant = 0;
@@ -268,7 +275,7 @@ $(function () {
 
   window.addEventListener ("mousemove", (event) => scene.onMouseMove(event), true);
 
-
+  window.addEventListener ("click", (event) => scene.onMouseClick(event), true);
 
   //Movimiento del pollo
   document.addEventListener("keydown", onDocumentKeyDown, false);
@@ -282,9 +289,15 @@ $(function () {
       } else if (keyCode == 39) {
         scene.getPersonaje().position.z += xSpeed;
         scene.getCamera().position.z += xSpeed;
+      // Volver a la posición inicial  
       } else if (keyCode == 32){
-        scene.getPersonaje().position.x += salto;
-        scene.getCamera().position.x += salto;
+        scene.getPersonaje().position.x = 0;
+        scene.getPersonaje().position.z = 0;
+
+        scene.getCamera().position.x = -50;
+        scene.getCamera().position.y = 40;
+        scene.getCamera().position.z = 0;
+        scene.getCamera().lookAt(scene.personaje.position);
       }
   };
   ///////////////////////
