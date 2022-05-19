@@ -26,10 +26,19 @@ class MyScene extends THREE.Scene {
     this.gui = this.createGUI ();
     
     this.personaje = new MyPersonaje(this.gui, myCanvas);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+		// También se indica dónde se coloca
+		this.camera.position.set (-50, 40, 0);
+		// Y hacia dónde mira
+		this.camera.lookAt(this.personaje.position);
+
+		this.add (this.camera);
     this.add(this.personaje);
 
     this.initStats();
-    
+    //intento recrear la cámara
+
+
     // Construimos los distinos elementos que tendremos en la escena
     
     // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
@@ -68,7 +77,6 @@ class MyScene extends THREE.Scene {
     $("#Stats-output").append( stats.domElement );
     
     this.stats = stats;
-    document.addEventListener('mousemove', onMouseMove, false);
   }
   
   createGround () {
@@ -169,9 +177,9 @@ class MyScene extends THREE.Scene {
   setCameraAspect (ratio) {
     // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
     // su sistema operativo hay que actualizar el ratio de aspecto de la cámara
-    this.personaje.getCamera().aspect = ratio;
+    this.camera.aspect = ratio;
     // Y si se cambia ese dato hay que actualizar la matriz de proyección de la cámara
-    this.personaje.getCamera().updateProjectionMatrix();
+    this.camera.updateProjectionMatrix();
   }
   
   onWindowResize () {
@@ -183,6 +191,15 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
 
+  getPersonaje(){
+    return this.personaje;
+  }
+
+  getCamera(){
+    return this.camera;
+  }
+
+
   update () {
     
     if (this.stats) this.stats.update();
@@ -193,10 +210,10 @@ class MyScene extends THREE.Scene {
     //this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    this.personaje.updateDerecha();
+    //this.personaje.updateDerecha();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
-    this.renderer.render (this, this.personaje.getCamera());
+    this.renderer.render (this, this.camera);
 
    
 
@@ -206,23 +223,10 @@ class MyScene extends THREE.Scene {
     requestAnimationFrame(() => this.update())
   }
 }
-var mouse = {x: 0, y: 0};
-function onMouseMove(event) {
-  
-  // Update the mouse variable
-  event.preventDefault();
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-// Make the sphere follow the mouse
- var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-  vector.unproject( this.personaje.getCamera() );
-  var dir = vector.sub( this.personaje.getCamera().position ).normalize();
-  var distance = - this.personaje.getCamera().position.z / dir.z;
-  var pos = this.personaje.getCamera().position.clone().add( dir.multiplyScalar( distance ) );
-  this.personaje.position.copy(pos);
-  // Make the sphere follow the mouse
-//   mouseMesh.position.set(event.clientX, event.clientY, 0);
-};
+
+
+var xSpeed= 1.0;
+var salto = 5.0;
 
 /// La función   main
 $(function () {
@@ -232,8 +236,26 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
-  
 
+
+  //Movimiento del pollo
+  document.addEventListener("keydown", onDocumentKeyDown, false);
+  function onDocumentKeyDown(event) {
+      var keyCode = event.which;
+      // Izquierda
+      if (keyCode == 37) {
+        scene.getPersonaje().position.z -= xSpeed;
+        scene.getCamera().position.z -= xSpeed;
+      // Derecha
+      } else if (keyCode == 39) {
+        scene.getPersonaje().position.z += xSpeed;
+        scene.getCamera().position.z += xSpeed;
+      } else if (keyCode == 32){
+        scene.getPersonaje().position.x += salto;
+        scene.getCamera().position.x += salto;
+      }
+  };
+  ///////////////////////
 
   // Que no se nos olvide, la primera visualización.
   scene.update();

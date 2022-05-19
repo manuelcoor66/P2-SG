@@ -7,15 +7,7 @@ class MyPersonaje extends THREE.Object3D {
 	constructor(gui) {
 		super();
 
-		this.animal = this.crearAnimal();	
-
-		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-		// También se indica dónde se coloca
-		this.camera.position.set (-50, 40, 0);
-		// Y hacia dónde mira
-		this.camera.lookAt(this.animal.position);
-
-		this.add (this.camera);
+		this.animal = this.crearAnimal();			
 		this.add(this.animal);
 	}
 
@@ -122,7 +114,7 @@ class MyPersonaje extends THREE.Object3D {
 		return final;
 	}
 
-	updateIzquierda () {		
+	/*updateIzquierda () {		
 
 		this.animal.position.z -= 0.1;
 		this.camera.position.z -= 0.1;
@@ -145,7 +137,7 @@ class MyPersonaje extends THREE.Object3D {
 		// En principio se devuelve la única cámara que tenemos
 		// Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
 		return this.camera;
-	  }
+	  }*/
 
 	
 }
