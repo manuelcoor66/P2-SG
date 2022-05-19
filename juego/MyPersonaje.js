@@ -115,24 +115,17 @@ class MyPersonaje extends THREE.Object3D {
 	}
 
 	/*updateIzquierda () {		
-
 		this.animal.position.z -= 0.1;
 		this.camera.position.z -= 0.1;
 	}
-
 	updateDerecha () {		
-
 		this.animal.position.z += 0.1;
 		this.camera.position.z += 0.1;
 	}
-
 	updateDelante () {
-
 		this.animal.position.x += 0.1;
 		this.camera.position.x += 0.1;
-
 	}
-
 	getCamera () {
 		// En principio se devuelve la única cámara que tenemos
 		// Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado

@@ -1,4 +1,3 @@
-
 // Clases de la biblioteca
 
 import * as THREE from '../libs/three.module.js'
@@ -220,9 +219,39 @@ class MyScene extends THREE.Scene {
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
-    requestAnimationFrame(() => this.update())
+    requestAnimationFrame(() => this.update());
   }
+
+  getMouse(event){
+    var mouse = 0;
+    mouse = (event.clientX / window.innerWidth) * 2 - 1;
+    return mouse;
+  }
+  
+  
+  onMouseMove (event){
+    var actual = this.getMouse(event)
+    //derecha
+    if (actual > X_ant ){
+      if (this.personaje.position.z < 20){
+      this.personaje.position.z += 3;
+      this.camera.position.z += 3;
+      }
+      //izquierda
+    } else if (actual < X_ant ){
+      if (this.personaje.position.z > -20){
+      this.personaje.position.z -= 3;
+      this.camera.position.z -= 3;
+      }
+    }
+      X_ant = actual;
+  }
+  
 }
+
+var X_ant = 0;
+
+
 
 
 var xSpeed= 1.0;
@@ -236,6 +265,9 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
+
+  window.addEventListener ("mousemove", (event) => scene.onMouseMove(event), true);
+
 
 
   //Movimiento del pollo
@@ -260,3 +292,6 @@ $(function () {
   // Que no se nos olvide, la primera visualización.
   scene.update();
 });
+
+
+
