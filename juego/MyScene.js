@@ -25,6 +25,9 @@ class MyScene extends THREE.Scene {
     // Se añade a la gui los controles para manipular los elementos de esta clase
     this.gui = this.createGUI ();
     
+    this.personaje = new MyPersonaje(this.gui, myCanvas);
+    this.add(this.personaje);
+
     this.initStats();
     
     // Construimos los distinos elementos que tendremos en la escena
@@ -33,7 +36,7 @@ class MyScene extends THREE.Scene {
     // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
     this.createLights ();
 
-		this.createCamera();
+		//this.createCamera();
     
     // Un suelo 
     this.createGround ();
@@ -46,32 +49,10 @@ class MyScene extends THREE.Scene {
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.personaje = new MyPersonaje(this.gui, myCanvas);
-    this.add(this.personaje);
+    
   }
 
-  createCamera () {
-		// Para crear una cámara le indicamos
-		//   El ángulo del campo de visión en grados sexagesimales
-		//   La razón de aspecto ancho/alto
-		//   Los planos de recorte cercano y lejano
-		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-		// También se indica dónde se coloca
-		this.camera.position.set (-30, 20, 0);
-		// Y hacia dónde mira
-		var look = new THREE.Vector3 (0,0,0);
-		this.camera.lookAt(look);
-		this.add (this.camera);
-		
-		// Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
-		this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
-		// Se configuran las velocidades de los movimientos
-		this.cameraControl.rotateSpeed = 5;
-		this.cameraControl.zoomSpeed = -2;
-		this.cameraControl.panSpeed = 0.5;
-		// Debe orbitar con respecto al punto de mira de la cámara
-		this.cameraControl.target = look;
-	}
+
   
   initStats() {
   
@@ -87,6 +68,7 @@ class MyScene extends THREE.Scene {
     $("#Stats-output").append( stats.domElement );
     
     this.stats = stats;
+    document.addEventListener('mousemove', onMouseMove, false);
   }
   
   createGround () {
@@ -181,20 +163,15 @@ class MyScene extends THREE.Scene {
     $(myCanvas).append(renderer.domElement);
     
     return renderer;  
-  }
-  
-  getCamera () {
-    // En principio se devuelve la única cámara que tenemos
-    // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
-    return this.camera;
-  }
+  } 
+
   
   setCameraAspect (ratio) {
     // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
     // su sistema operativo hay que actualizar el ratio de aspecto de la cámara
-    this.camera.aspect = ratio;
+    this.personaje.getCamera().aspect = ratio;
     // Y si se cambia ese dato hay que actualizar la matriz de proyección de la cámara
-    this.camera.updateProjectionMatrix();
+    this.personaje.getCamera().updateProjectionMatrix();
   }
   
   onWindowResize () {
@@ -213,13 +190,15 @@ class MyScene extends THREE.Scene {
     // Se actualizan los elementos de la escena para cada frame
     
     // Se actualiza la posición de la cámara según su controlador
-    this.cameraControl.update();
+    //this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    //this.model1.update();
+    this.personaje.updateDerecha();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
-    this.renderer.render (this, this.getCamera());
+    this.renderer.render (this, this.personaje.getCamera());
+
+   
 
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
@@ -227,6 +206,23 @@ class MyScene extends THREE.Scene {
     requestAnimationFrame(() => this.update())
   }
 }
+var mouse = {x: 0, y: 0};
+function onMouseMove(event) {
+  
+  // Update the mouse variable
+  event.preventDefault();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+// Make the sphere follow the mouse
+ var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+  vector.unproject( this.personaje.getCamera() );
+  var dir = vector.sub( this.personaje.getCamera().position ).normalize();
+  var distance = - this.personaje.getCamera().position.z / dir.z;
+  var pos = this.personaje.getCamera().position.clone().add( dir.multiplyScalar( distance ) );
+  this.personaje.position.copy(pos);
+  // Make the sphere follow the mouse
+//   mouseMesh.position.set(event.clientX, event.clientY, 0);
+};
 
 /// La función   main
 $(function () {
@@ -237,6 +233,8 @@ $(function () {
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
   
+
+
   // Que no se nos olvide, la primera visualización.
   scene.update();
 });
