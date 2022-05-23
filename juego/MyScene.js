@@ -325,6 +325,40 @@ $(function () {
 
   // Que no se nos olvide, la primera visualización.
   scene.update();
+
+
+
+  /*let texture_px = new THREE.TextureLoader().load( 'texts/cielo_px.png');
+  let texture_nx = new THREE.TextureLoader().load( 'texts/cielo_nx.png');
+  let texture_py = new THREE.TextureLoader().load( 'texts/cielo_py.png');
+  let texture_ny = new THREE.TextureLoader().load( 'texts/cielo_ny.png');
+  let texture_pz = new THREE.TextureLoader().load( 'texts/cielo_pz.png');
+  let texture_nz = new THREE.TextureLoader().load( 'texts/cielo_nz.png');
+
+  let materialArray = [];  
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_px }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_nx }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_py }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_ny }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_pz }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_nz }));
+    
+  for (let i = 0; i < 6; i++)
+    materialArray[i].side = THREE.BackSide;
+    
+  let skyboxGeo = new THREE.BoxGeometry( 10, 10, 10);
+  let skybox = new THREE.Mesh( skyboxGeo, materialArray );
+  skybox.position.x+=30;
+  skybox.position.z+=45;
+  this.add( skybox );*/
+
+  var urls = ['texts/cielo_px.png', 'texts/cielo_nx.png', 'texts/cielo_py.png', 
+              'texts/cielo_ny.png', 'texts/cielo_pz.png', 'texts/cielo_nz.png'];
+
+  var textureCube = new THREE.CubeTextureLoader().load(urls);
+
+  scene.background = textureCube;
+
 });
 
 
