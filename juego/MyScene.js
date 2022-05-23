@@ -48,6 +48,9 @@ class MyScene extends THREE.Scene {
     
     // Un suelo 
     this.createGround ();
+
+    // El cielo
+    this.createBackground ();
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
     this.axis = new THREE.AxesHelper (5);
@@ -127,13 +130,24 @@ class MyScene extends THREE.Scene {
     
     return gui;
   }
+
+  createBackground () {
+    /*var materialColor = new THREE.Mesh({ map: THREE.ImageUtils.loadTexture("../imgs/cielo-azul.jpg"), depthTest: false});
+    var scene = new MyScene("#WebGL-output");
+
+    this.bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), materialColor);
+    this.bgPlane.position.z = -100;
+    this.bgPlane.scale.set(window.innerWidth * 2, window.innerHeight * 2, 1);
+
+    scene.add(this.bgPlane);*/
+  }
   
   createLights () {
     // Se crea una luz ambiental, evita que se vean complentamente negras las zonas donde no incide de manera directa una fuente de luz
     // La luz ambiental solo tiene un color y una intensidad
     // Se declara como   var   y va a ser una variable local a este método
     //    se hace así puesto que no va a ser accedida desde otros métodos
-    var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
     // La añadimos a la escena
     this.add (ambientLight);
     
@@ -141,9 +155,16 @@ class MyScene extends THREE.Scene {
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.spotLight = new THREE.SpotLight( 0xffffff, this.guiControls.lightIntensity );
-    this.spotLight.position.set( 60, 60, 40 );
-    this.add (this.spotLight);
+
+    this.spotLight = new THREE.SpotLight(0xfcfcfc, 0.7);
+    this.spotLight.position.set(2, 30, 5);
+
+    var target = new THREE.Object3D();
+    target.position.set(2, 0, 5);
+    this.spotLight.target = target;
+
+    this.add(target);
+    this.add(this.spotLight);
   }
   
   setLightIntensity (valor) {
