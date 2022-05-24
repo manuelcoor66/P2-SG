@@ -9,8 +9,8 @@ import { Stats } from '../libs/stats.module.js'
 import { MyPersonaje } from './MyPersonaje.js'
 import { Mov_Coche1} from './mov_coche1.js'
 import { Mov_Camion1} from './mov_camion1.js'
-import { Mov_Coche2} from './mov_coche2.js'
-import { Mov_Camion2} from './mov_camion2.js'
+/*import { Mov_Coche2} from './mov_coche2.js'
+import { Mov_Camion2} from './mov_camion2.js'*/
 
  
 /// La clase fachada del modelo
