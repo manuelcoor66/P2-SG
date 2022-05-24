@@ -7,6 +7,10 @@ import { Stats } from '../libs/stats.module.js'
 
 // Clases de mi proyecto
 import { MyPersonaje } from './MyPersonaje.js'
+import { Mov_Coche1} from './mov_coche1.js'
+import { Mov_Camion1} from './mov_camion1.js'
+import { Mov_Coche2} from './mov_coche2.js'
+import { Mov_Camion2} from './mov_camion2.js'
 
  
 /// La clase fachada del modelo
@@ -33,6 +37,26 @@ class MyScene extends THREE.Scene {
 
 		this.add (this.camera);
     this.add(this.personaje);
+
+    this.coche1 = new Mov_Coche1(this.gui, "recorrido coche1");
+    this.coche1.translateY(0.6);
+    this.add (this.coche1);
+
+    this.camion1 = new Mov_Camion1(this.gui, "recorrido camion1");
+    this.camion1.translateY(0.6);
+    this.camion1.rotateY(Math.PI);
+    this.camion1.translateX(-21);
+    this.add (this.camion1);
+
+    /*this.coche2 = new Mov_Coche2(this.gui, "recorrido coche2");
+    this.coche2.translateY(0.6);
+    this.add (this.coche2);
+    
+    this.camion2 = new Mov_Camion2(this.gui, "recorrido camion2");
+    this.camion2.translateY(0.6);
+    this.camion2.rotateY(Math.PI);
+    this.camion2.translateX(100);
+    this.add (this.camion2);*/
 
     this.initStats();
     //intento recrear la cámara
@@ -230,7 +254,10 @@ class MyScene extends THREE.Scene {
     //this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    //this.personaje.updateDerecha();
+    this.coche1.update();
+    this.camion1.update();
+    /*this.coche2.update();
+    this.camion2.update();*/
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.camera);
@@ -279,9 +306,6 @@ class MyScene extends THREE.Scene {
 
 var X_ant = 0;
 
-
-
-
 var xSpeed= 1.0;
 var salto = 5.0;
 
@@ -323,41 +347,39 @@ $(function () {
   };
   ///////////////////////
 
-  // Que no se nos olvide, la primera visualización.
-  scene.update();
+  /*let materialArray = [];  
+  let texture_ft = new THREE.TextureLoader().load( 'texts/bluecloud_bk.jpg');
+  let texture_bk = new THREE.TextureLoader().load( 'texts/bluecloud_ft.jpg');
+  let texture_up = new THREE.TextureLoader().load( 'texts/bluecloud_up.jpg');
+  let texture_dn = new THREE.TextureLoader().load( 'texts/bluecloud_dn.jpg');
+  let texture_rt = new THREE.TextureLoader().load( 'texts/bluecloud_rt.jpg');
+  let texture_lf = new THREE.TextureLoader().load( 'texts/bluecloud_lf.jpg');
 
-
-
-  /*let texture_px = new THREE.TextureLoader().load( 'texts/cielo_px.png');
-  let texture_nx = new THREE.TextureLoader().load( 'texts/cielo_nx.png');
-  let texture_py = new THREE.TextureLoader().load( 'texts/cielo_py.png');
-  let texture_ny = new THREE.TextureLoader().load( 'texts/cielo_ny.png');
-  let texture_pz = new THREE.TextureLoader().load( 'texts/cielo_pz.png');
-  let texture_nz = new THREE.TextureLoader().load( 'texts/cielo_nz.png');
-
-  let materialArray = [];  
-  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_px }));
-  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_nx }));
-  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_py }));
-  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_ny }));
-  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_pz }));
-  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_nz }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_ft }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_bk }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_up }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_dn }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_rt }));
+  materialArray.push(new THREE.MeshBasicMaterial( { map: texture_lf }));
     
   for (let i = 0; i < 6; i++)
     materialArray[i].side = THREE.BackSide;
     
-  let skyboxGeo = new THREE.BoxGeometry( 10, 10, 10);
+  let skyboxGeo = new THREE.BoxGeometry( 100, 100, 100);
   let skybox = new THREE.Mesh( skyboxGeo, materialArray );
-  skybox.position.x+=30;
-  skybox.position.z+=45;
-  this.add( skybox );*/
+  skybox.position.x+=0;
+  skybox.position.z+=0;
+  scene.add( skybox );*/
 
-  var urls = ['texts/cielo_px.png', 'texts/cielo_nx.png', 'texts/cielo_py.png', 
+  // Que no se nos olvide, la primera visualización.
+  scene.update();
+
+  /*var urls = ['texts/cielo_px.png', 'texts/cielo_nx.png', 'texts/cielo_py.png', 
               'texts/cielo_ny.png', 'texts/cielo_pz.png', 'texts/cielo_nz.png'];
 
   var textureCube = new THREE.CubeTextureLoader().load(urls);
 
-  scene.background = textureCube;
+  scene.background = textureCube;*/
 
 });
 
