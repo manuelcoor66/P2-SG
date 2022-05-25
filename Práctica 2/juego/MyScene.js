@@ -1,13 +1,15 @@
-
 // Clases de la biblioteca
 
 import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 import { Stats } from '../libs/stats.module.js'
+import { MTLLoader } from '../libs/MTLLoader.js'
+import { OBJLoader } from '../libs/OBJLoader.js'
 
 // Clases de mi proyecto
 import { MyPersonaje } from './MyPersonaje.js'
+
 
  
 /// La clase fachada del modelo
@@ -25,16 +27,31 @@ class MyScene extends THREE.Scene {
     // Se añade a la gui los controles para manipular los elementos de esta clase
     this.gui = this.createGUI ();
     
-    this.initStats();
+    this.personaje = new MyPersonaje(this.gui, myCanvas);
     
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+		// También se indica dónde se coloca
+		this.camera.position.set (-70, 60, 0);
+		// Y hacia dónde mira
+		this.camera.lookAt(this.personaje.position);
+
+		this.add (this.camera);
+    this.add(this.personaje);
+
+    this.initStats();
+    //intento recrear la cámara
+
+
     // Construimos los distinos elementos que tendremos en la escena
     
     // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
     // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
     this.createLights ();
+
+		//this.createCamera();
     
     // Un suelo 
-    this.createGround ();
+    this.createGround ();   
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
     this.axis = new THREE.AxesHelper (5);
@@ -44,9 +61,10 @@ class MyScene extends THREE.Scene {
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.personaje = new MyPersonaje(this.gui, myCanvas);
-    this.add(this.personaje);
+    
   }
+
+
   
   initStats() {
   
@@ -62,28 +80,107 @@ class MyScene extends THREE.Scene {
     $("#Stats-output").append( stats.domElement );
     
     this.stats = stats;
+
+    
   }
   
-  createGround () {
-    // El suelo es un Mesh, necesita una geometría y un material.
-    
-    // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (50,0.2,50);
-    
-    // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
-    var materialGround = new THREE.MeshPhongMaterial ({map: texture});
-    
-    // Ya se puede construir el Mesh
-    var ground = new THREE.Mesh (geometryGround, materialGround);
-    
-    // Todas las figuras se crean centradas en el origen.
-    // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    ground.position.y = -0.1;
+  createGround () {   
+   
+
+    // Primer Nivel
+    var hierba1 = this.createHierba();
+    var calle1 = this.createCalle();
+    hierba1.position.y = -25;
+    calle1.position.y = -25;
+    calle1.position.x = +50; 
+
+    var hierba2 = this.createHierba();
+    var calle2 = this.createCalle();
+    hierba2.position.y = -25;
+    calle2.position.y = -25;
+    hierba2.position.x = +100;
+    calle2.position.x = +150; 
+
     
     // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (ground);
+    this.add (calle1 ,hierba1, calle2, hierba2);
   }
+
+
+
+
+  createCalle () {
+
+    var loader = new THREE.TextureLoader();
+    var texture = loader.load( 'texturas/stone.jpg', function ( texture ) {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.offset.set( 0, 0 );
+    texture.repeat.set( 10, 10 );
+    } );
+
+
+    var loader1 = new THREE.TextureLoader();
+    var texture1 = loader1.load( 'texturas/earth.jpg', function ( texture1 ) {
+    texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
+    texture1.offset.set( 0, 0 );
+    texture1.repeat.set( 15, 15 );
+    } );
+
+    var geometryStreet = new THREE.BoxGeometry (50,50,180);
+    
+    var calle_Material =
+    [
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), //right side        
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // bottom side
+       new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide }),
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // back side
+
+    ]
+    var material_street = new THREE.MeshFaceMaterial(calle_Material); 
+    var calle = new THREE.Mesh (geometryStreet, material_street);
+
+    return calle;
+  }
+
+  createHierba () {
+
+    var loader = new THREE.TextureLoader();
+    var texture = loader.load( 'texturas/grass-m.jpg', function ( texture ) {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.offset.set( 0, 0 );
+    texture.repeat.set( 10, 10 );
+    } );
+
+    var loader1 = new THREE.TextureLoader();
+    var texture1 = loader1.load( 'texturas/earth.jpg', function ( texture1 ) {
+    texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
+    texture1.offset.set( 0, 0 );
+    texture1.repeat.set( 10, 10 );
+    } );
+    
+
+    var geometryGrass = new THREE.BoxGeometry (50,50,80);    
+
+    var hierba_Material = 
+    [      
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), //right side        
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // bottom side
+       new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide }),
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // back side
+    ]
+
+    var material_grass = new THREE.MeshFaceMaterial(hierba_Material); 
+    var hierba = new THREE.Mesh (geometryGrass, material_grass);
+
+    return hierba;
+  }
+
+ 
+
   
   createGUI () {
     // Se crea la interfaz gráfica de usuario
@@ -113,13 +210,15 @@ class MyScene extends THREE.Scene {
     
     return gui;
   }
+
+ 
   
   createLights () {
     // Se crea una luz ambiental, evita que se vean complentamente negras las zonas donde no incide de manera directa una fuente de luz
     // La luz ambiental solo tiene un color y una intensidad
     // Se declara como   var   y va a ser una variable local a este método
     //    se hace así puesto que no va a ser accedida desde otros métodos
-    var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
+    var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
     // La añadimos a la escena
     this.add (ambientLight);
     
@@ -127,9 +226,16 @@ class MyScene extends THREE.Scene {
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.spotLight = new THREE.SpotLight( 0xffffff, this.guiControls.lightIntensity );
-    this.spotLight.position.set( 60, 60, 40 );
-    this.add (this.spotLight);
+
+    /*this.spotLight = new THREE.SpotLight(0xfcfcfc, 0.7);
+    this.spotLight.position.set(2, 30, 5);
+
+    var target = new THREE.Object3D();
+    target.position.set(2, 0, 5);
+    this.spotLight.target = target;
+
+    this.add(target);
+    this.add(this.spotLight);*/
   }
   
   setLightIntensity (valor) {
@@ -156,13 +262,8 @@ class MyScene extends THREE.Scene {
     $(myCanvas).append(renderer.domElement);
     
     return renderer;  
-  }
-  
-  getCamera () {
-    // En principio se devuelve la única cámara que tenemos
-    // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
-    return this.camera;
-  }
+  } 
+
   
   setCameraAspect (ratio) {
     // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
@@ -181,27 +282,68 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
 
+  getPersonaje(){
+    return this.personaje;
+  }
+
+  getCamera(){
+    return this.camera;
+  }
+
+
   update () {
     
-    if (this.stats) this.stats.update();
-    
-    // Se actualizan los elementos de la escena para cada frame
-    
-    // Se actualiza la posición de la cámara según su controlador
-    this.cameraControl.update();
-    
-    // Se actualiza el resto del modelo
-    //this.model1.update();
-    
+    if (this.stats) this.stats.update();    
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
-    this.renderer.render (this, this.getCamera());
+    this.renderer.render (this, this.camera); 
 
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
-    requestAnimationFrame(() => this.update())
+    requestAnimationFrame(() => this.update());
+  }
+
+  getMouse(event){
+    var mouse = 0;
+    mouse = (event.clientX / window.innerWidth) * 2 - 1;
+    return mouse;
+  }
+  
+  
+  onMouseMove (event) {
+    var actual = this.getMouse(event)
+    //derecha
+    if (actual > X_ant ){
+      if (this.personaje.position.z < 20){
+      this.personaje.position.z += 3;
+      this.camera.position.z += 3;
+      }
+      //izquierda
+    } else if (actual < X_ant ){
+      if (this.personaje.position.z > -20){
+      this.personaje.position.z -= 3;
+      this.camera.position.z -= 3;
+      }
+    }
+      X_ant = actual;
+  }
+
+  onMouseClick (event) {
+    switch(event.which) {
+      case 1:
+        this.personaje.position.x += 3;
+        this.camera.position.x += 3;
+    }
   }
 }
+
+var X_ant = 0;
+
+
+
+
+var xSpeed= 1.0;
+var salto = 5.0;
 
 /// La función   main
 $(function () {
@@ -211,7 +353,53 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
-  
+
+  window.addEventListener ("mousemove", (event) => scene.onMouseMove(event), true);
+
+  window.addEventListener ("click", (event) => scene.onMouseClick(event), true);
+
+  //Movimiento del pollo
+  document.addEventListener("keydown", onDocumentKeyDown, false);
+  function onDocumentKeyDown(event) {
+      var keyCode = event.which;
+      // Izquierda
+      if (keyCode == 37) {
+        scene.getPersonaje().position.z -= xSpeed;
+        scene.getCamera().position.z -= xSpeed;
+      // Derecha
+      } else if (keyCode == 39) {
+        scene.getPersonaje().position.z += xSpeed;
+        scene.getCamera().position.z += xSpeed;
+      // Volver a la posición inicial  
+      } else if (keyCode == 32){
+        scene.getPersonaje().position.x = 0;
+        scene.getPersonaje().position.z = 0;
+
+        scene.getCamera().position.x = -70;
+        scene.getCamera().position.y = 60;
+        scene.getCamera().position.z = 0;
+        scene.getCamera().lookAt(scene.personaje.position);
+      }
+  };
+  ///////////////////////
+
   // Que no se nos olvide, la primera visualización.
-  scene.update();
+  scene.update(); 
+
+  var skybox = new THREE.CubeTextureLoader().load([
+
+    "texturas/fondo.png",
+    "texturas/fondo.png",
+    "texturas/fondo.png",
+    "texturas/fondo.png",
+    "texturas/fondo.png",
+    "texturas/fondo.png"
+  ]);
+
+  scene.background = skybox;
+
+
 });
+
+
+

@@ -4,19 +4,10 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 import { Stats } from '../libs/stats.module.js'
 
 class MyPersonaje extends THREE.Object3D {
-	constructor(gui, myCanvas) {
+	constructor(gui) {
 		super();
 
-		// Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
-		this.renderer = this.createRenderer(myCanvas);
-
-		this.createCamera ();
-
-		this.animal = this.crearAnimal();
-
-		this.final = new THREE.Object3D()
-		this.final.add(this.animal);
-
+		this.animal = this.crearAnimal();			
 		this.add(this.animal);
 	}
 
@@ -50,19 +41,32 @@ class MyPersonaje extends THREE.Object3D {
 
 	crearCabeza() {
 		var cabeza = new THREE.BoxBufferGeometry(1, 1, 1);
-		/*var ojo1 = new THREE.BoxBufferGeometry(0.1, 0.25, 0.25);
+		var ojo1 = new THREE.BoxBufferGeometry(0.1, 0.25, 0.25);
 		var ojo2 = new THREE.BoxBufferGeometry(0.1, 0.25, 0.25);
-		var boca = new THREE.BoxBufferGeometry();*/
+		var boca = new THREE.BoxBufferGeometry(0.5, 0.25, 0.8);
 
 		var MatCabeza = new THREE.MeshPhongMaterial({color: 0xE1E2E3});
 		var cabezaMesh = new THREE.Mesh(cabeza, MatCabeza);
 
-		/*var MatOjos = new THREE.MeshPhongMaterial({color: 0x000000});
+		var MatOjos = new THREE.MeshPhongMaterial({color: 0x000000});
 		var ojo1Mesh = new THREE.Mesh(ojo1, MatOjos);
 		var ojo2Mesh = new THREE.Mesh(ojo2, MatOjos);
 
-		ojo2Mesh.translateY(0.7);
-		ojo2Mesh.translateX(0.5);*/
+		var MatBoca = new THREE.MeshPhongMaterial({color: 0xFFD278});
+		var bocaMesh = new THREE.Mesh(boca, MatBoca);
+
+		ojo1Mesh.translateY(0.25);
+		ojo1Mesh.translateX(0.5);
+		ojo1Mesh.translateZ(-0.25);
+		ojo2Mesh.translateY(0.25);
+		ojo2Mesh.translateX(0.5);
+		ojo2Mesh.translateZ(0.25);
+		bocaMesh.translateY(-0.2);
+		bocaMesh.translateX(0.5);
+
+		cabezaMesh.add(ojo1Mesh);
+		cabezaMesh.add(ojo2Mesh);
+		cabezaMesh.add(bocaMesh);
 
 		cabezaMesh.translateY(0.5);
 
@@ -110,28 +114,9 @@ class MyPersonaje extends THREE.Object3D {
 		return final;
 	}
 
-	createCamera () {
-		// Para crear una cámara le indicamos
-		//   El ángulo del campo de visión en grados sexagesimales
-		//   La razón de aspecto ancho/alto
-		//   Los planos de recorte cercano y lejano
-		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-		// También se indica dónde se coloca
-		this.camera.position.set (-30, 20, 0);
-		// Y hacia dónde mira
-		var look = new THREE.Vector3 (0,0,0);
-		this.camera.lookAt(look);
-		this.add (this.camera);
-		
-		// Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
-		this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
-		// Se configuran las velocidades de los movimientos
-		this.cameraControl.rotateSpeed = 5;
-		this.cameraControl.zoomSpeed = -2;
-		this.cameraControl.panSpeed = 0.5;
-		// Debe orbitar con respecto al punto de mira de la cámara
-		this.cameraControl.target = look;
-	  }
+
+
+	
 }
 
 
