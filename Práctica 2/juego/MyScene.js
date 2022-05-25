@@ -9,6 +9,12 @@ import { OBJLoader } from '../libs/OBJLoader.js'
 
 // Clases de mi proyecto
 import { MyPersonaje } from './MyPersonaje.js'
+import { Mov_Coche1} from './mov_coche1.js'
+import { Mov_Camion1} from './mov_camion1.js'
+import { Mov_Coche2} from './mov_coche2.js'
+import { Mov_Camion2} from './mov_camion2.js'
+/*import { Mov_Coche2} from './mov_coche2.js'
+import { Mov_Camion2} from './mov_camion2.js'*/
 
 
  
@@ -37,6 +43,27 @@ class MyScene extends THREE.Scene {
 
 		this.add (this.camera);
     this.add(this.personaje);
+
+    this.coche1 = new Mov_Coche1(this.gui, "recorrido coche1");
+    this.coche1.translateY(0.6);
+    this.add (this.coche1);
+
+    this.camion1 = new Mov_Camion1(this.gui, "recorrido camion1");
+    this.camion1.translateY(0.6);
+    this.camion1.rotateY(Math.PI);
+    this.camion1.translateX(-21);
+    this.add (this.camion1);
+
+    this.coche2 = new Mov_Coche2(this.gui, "recorrido coche2");
+    this.coche2.translateY(0.6);
+    this.coche2.translateX(100);
+    this.add (this.coche2);
+
+    this.camion2 = new Mov_Camion2(this.gui, "recorrido camion2");
+    this.camion2.translateY(0.6);
+    this.camion2.rotateY(Math.PI);
+    this.camion2.translateX(-121);
+    this.add (this.camion2);
 
     this.initStats();
     //intento recrear la cámara
@@ -294,6 +321,13 @@ class MyScene extends THREE.Scene {
   update () {
     
     if (this.stats) this.stats.update();    
+
+    
+    // Se actualiza el resto del modelo
+    this.coche1.update();
+    this.camion1.update();
+    this.coche2.update();
+    this.camion2.update();
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.camera); 
 
@@ -314,13 +348,13 @@ class MyScene extends THREE.Scene {
     var actual = this.getMouse(event)
     //derecha
     if (actual > X_ant ){
-      if (this.personaje.position.z < 20){
+      if (this.personaje.position.z < 35){
       this.personaje.position.z += 3;
       this.camera.position.z += 3;
       }
       //izquierda
     } else if (actual < X_ant ){
-      if (this.personaje.position.z > -20){
+      if (this.personaje.position.z > -35){
       this.personaje.position.z -= 3;
       this.camera.position.z -= 3;
       }
