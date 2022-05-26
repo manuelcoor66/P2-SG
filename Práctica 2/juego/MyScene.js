@@ -29,12 +29,28 @@ class MyScene extends THREE.Scene {
     
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
+
+  
     
     // Se añade a la gui los controles para manipular los elementos de esta clase
     this.gui = this.createGUI ();
     
     this.personaje = new MyPersonaje(this.gui, myCanvas);
+
+    this.personaje1 = new MyPersonaje(this.gui, myCanvas);
     
+
+    
+    
+    
+    
+
+    
+
+
+    
+   
+
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 		// También se indica dónde se coloca
 		this.camera.position.set (-70, 60, 0);
@@ -42,10 +58,11 @@ class MyScene extends THREE.Scene {
 		this.camera.lookAt(this.personaje.position);
 
 		this.add (this.camera);
-    this.add(this.personaje);
-
+    this.add(this.personaje, this.personaje1);
+    //this.personaje1.translateX(10) ;
     this.coche1 = new Mov_Coche1(this.gui, "recorrido coche1");
-    this.coche1.translateY(0.6);
+    this.coche1.translateY(0.6);   
+    
     this.add (this.coche1);
 
     this.camion1 = new Mov_Camion1(this.gui, "recorrido camion1");
@@ -317,6 +334,13 @@ class MyScene extends THREE.Scene {
     return this.camera;
   }
 
+  intersectBoxes (b1, b2) {
+    var vectorBetweenBoxes = new THREE.Vector2();
+    vectorBetweenBoxes.subVectors (new THREE.Vector2 (b1.position.x, b1.position.z),
+                                   new THREE.Vector2 (b2.position.x, b2.position.z));
+    return (vectorBetweenBoxes.length() < this.boxSize);
+  }
+
 
   update () {
     
@@ -331,10 +355,17 @@ class MyScene extends THREE.Scene {
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.camera); 
 
+    
+   /*let cubePersonaje = new THREE.Box3(new THREE.Vector3(),new THREE.Vector3());
+    cubePersonaje.setFromObject(this.personaje);*/
+    
+    
+    
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update());
+
   }
 
   getMouse(event){
@@ -379,11 +410,45 @@ var X_ant = 0;
 var xSpeed= 1.0;
 var salto = 5.0;
 
+
+
+
+
+
 /// La función   main
 $(function () {
   
   // Se instancia la escena pasándole el  div  que se ha creado en el html para visualizar
   var scene = new MyScene("#WebGL-output");
+
+
+
+//Vamos a intentar hacer colisiones muajaj
+var boxGeom = new THREE.BoxBufferGeometry (1,1,1);   
+var boxMat = new THREE.MeshPhongMaterial({color: 0xCF0000});   
+var box = new THREE.Mesh (boxGeom, boxMat);  
+scene.add(box);
+
+
+  colision()
+  function colision(){
+    if(intersectBoxes(scene.personaje, scene.personaje1))
+      console.log('si');
+    scene.personaje1.translateX(0.01);
+    requestAnimationFrame(colision);
+  }
+
+    
+  function intersectBoxes (b1, b2) {
+    var vectorBetweenBoxes = new THREE.Vector2();
+   
+    vectorBetweenBoxes.subVectors (new THREE.Vector2 (b1.position.x, b1.position.z),
+                                   new THREE.Vector2 (b2.position.x, b2.position.z));
+    return (vectorBetweenBoxes.length() < 1);
+  }
+ 
+
+
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
