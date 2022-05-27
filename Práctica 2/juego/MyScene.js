@@ -6,6 +6,8 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 import { Stats } from '../libs/stats.module.js'
 import { MTLLoader } from '../libs/MTLLoader.js'
 import { OBJLoader } from '../libs/OBJLoader.js'
+import * as TWEEN from '../libs/tween.esm.js'
+import * as COCHE from './coche1.js'
 
 // Clases de mi proyecto
 import { MyPersonaje } from './MyPersonaje.js'
@@ -37,7 +39,7 @@ class MyScene extends THREE.Scene {
     
     this.personaje = new MyPersonaje(this.gui, myCanvas);
 
-    this.personaje1 = new MyPersonaje(this.gui, myCanvas);
+    
     
 
     
@@ -58,10 +60,11 @@ class MyScene extends THREE.Scene {
 		this.camera.lookAt(this.personaje.position);
 
 		this.add (this.camera);
-    this.add(this.personaje, this.personaje1);
-    //this.personaje1.translateX(10) ;
-    this.coche1 = new Mov_Coche1(this.gui, "recorrido coche1");
-    this.coche1.translateY(0.6);   
+    this.add(this.personaje);
+ 
+    this.coche1 = new COCHE.Coche1();
+
+     
     
     this.add (this.coche1);
 
@@ -348,7 +351,7 @@ class MyScene extends THREE.Scene {
 
     
     // Se actualiza el resto del modelo
-    this.coche1.update();
+    //this.coche1.update();
     this.camion1.update();
     this.coche2.update();
     this.camion2.update();
@@ -411,7 +414,29 @@ var xSpeed= 1.0;
 var salto = 5.0;
 
 
+var clock = new THREE.Clock();
 
+
+
+//Movimiento Coches
+
+var path = [
+  new THREE.Vector3(40, 0, -80),
+  new THREE.Vector3(40, 0, 80),
+];
+
+var curva = new THREE.CatmullRomCurve3(path);  
+var puntos = curva.getPoints(50);
+var geometry = new THREE.BufferGeometry().setFromPoints(puntos);
+var material_8 = new THREE.LineBasicMaterial({color: 0x000000});
+var spline = new THREE.Line(geometry, material_8);
+
+var origen = {p: 0}
+  var destino = {p: 1}
+
+
+  
+    
 
 
 
@@ -422,19 +447,32 @@ $(function () {
   var scene = new MyScene("#WebGL-output");
 
 
+  //Coche1
+  scene.coche1.translateY(0.6); 
+  scene.coche1.translateX(10);  
+  var movement = new TWEEN.Tween(origen).to(destino, 5000)
+  movement.easing(TWEEN.Easing.Linear.None)
+  movement.onUpdate(() => {
+      var posicion = curva.getPointAt(origen.p)
+      scene.coche1.position.copy(posicion)
 
-//Vamos a intentar hacer colisiones muajaj
-var boxGeom = new THREE.BoxBufferGeometry (1,1,1);   
-var boxMat = new THREE.MeshPhongMaterial({color: 0xCF0000});   
-var box = new THREE.Mesh (boxGeom, boxMat);  
-scene.add(box);
+      //var tangente = spline.getTangentAt(origen.p)
+      //posicion.add(tangente)
+      //scene.coche1.lookAt(posicion)
+    })
+    movement.onComplete(() => {origen.p = 0;})
+    movement.repeat(Infinity)
+    movement.start()
 
 
+
+
+
+ 
   colision()
   function colision(){
-    if(intersectBoxes(scene.personaje, scene.personaje1))
-      console.log('si');
-    scene.personaje1.translateX(0.01);
+    if(intersectBoxes(scene.personaje, scene.coche1))
+    location.reload(); 
     requestAnimationFrame(colision);
   }
 
@@ -444,7 +482,7 @@ scene.add(box);
    
     vectorBetweenBoxes.subVectors (new THREE.Vector2 (b1.position.x, b1.position.z),
                                    new THREE.Vector2 (b2.position.x, b2.position.z));
-    return (vectorBetweenBoxes.length() < 1);
+    return (vectorBetweenBoxes.length() < 8);
   }
  
 
