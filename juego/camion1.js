@@ -18,7 +18,10 @@ class Camion1 extends THREE.Object3D {
           objeto.setMaterials(materiales);
           objeto.load('../models/P2/camion1/camion1.obj',
           function(objeto){
+            objeto.traverse(function(child){child.castShadow = true;})
+            objeto.castShadow = true;
             objeto.scale.setScalar(5);
+            
               var obj = objeto;
               that.add(obj);
             },

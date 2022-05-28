@@ -10,6 +10,7 @@ import * as TWEEN from '../libs/tween.esm.js'
 import * as COCHE from './coche1.js'
 import * as CAMION from './camion1.js'
 import * as CAMION2 from './camion2.js'
+import { MyBox } from './MyBox.js'
 
 // Clases de mi proyecto
 import { MyPersonaje } from './MyPersonaje.js'
@@ -27,13 +28,23 @@ class MyScene extends THREE.Scene {
     
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
-
-  
+   this.renderer.shadowMap.enabled = true;
+  this.renderer.shadowMap.type = THREE.BasicShadowMap;
     
     // Se añade a la gui los controles para manipular los elementos de esta clase
     this.gui = this.createGUI ();
-    
+
+
     this.personaje = new MyPersonaje(this.gui, myCanvas);
+    this.personaje.castShadow = true;
+    this.personaje.receiveShadow = false;
+    this.personaje.traverse(n => { if ( n.isMesh ) {
+      n.castShadow = true; 
+      n.receiveShadow = true;
+      if(n.material.map) n.material.map.anisotropy = 16; 
+    }});
+
+
 
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 		// También se indica dónde se coloca
@@ -45,15 +56,18 @@ class MyScene extends THREE.Scene {
     this.add(this.personaje);
  
     this.coche1 = new COCHE.Coche1();
+    
     this.add (this.coche1);
+    
 
-    this.camion1 = new CAMION2.Camion2();
+    this.camion1 = new CAMION2.Camion2();  
     this.add (this.camion1);
 
-    this.coche2 = new COCHE.Coche1();
+
+    this.coche2 = new COCHE.Coche1();    
     this.add (this.coche2);
     
-    this.camion2 = new CAMION.Camion1();
+    this.camion2 = new CAMION.Camion1();    
     this.add (this.camion2);
 
 
@@ -127,11 +141,32 @@ class MyScene extends THREE.Scene {
 
     
   }
+
+
+  createGround1 () {
+    // El suelo es un Mesh, necesita una geometría y un material.
+    
+    // La geometría es una caja con muy poca altura
+    var geometryGround = new THREE.BoxGeometry (500,0.2,500);
+    
+    // El material se hará con una textura de madera
+    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
+    var materialGround = new THREE.MeshPhongMaterial ({map: texture});
+    
+    // Ya se puede construir el Mesh
+    var ground = new THREE.Mesh (geometryGround, materialGround);
+    
+    // Todas las figuras se crean centradas en el origen.
+    // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
+    ground.position.y = -0.1;
+    ground.receiveShadow = true;
+    ground.castShadow = false;
+    // Que no se nos olvide añadirlo a la escena, que en este caso es  this
+    this.add (ground);
+  }
   
   createGround () {   
-   
-
-    // Primer Nivel
+    
     var hierba1 = this.createHierba();
     var calle1 = this.createCalle();
     hierba1.position.y = -25;
@@ -163,7 +198,27 @@ class MyScene extends THREE.Scene {
     linea_de_meta.position.x = +350;*/
     
     // Que no se nos olvide añadirlo a la escena, que en este caso es  this
+    calle1.receiveShadow = true;
+    hierba1.receiveShadow = true;
+    calle2.receiveShadow = true;
+    hierba2.receiveShadow = true;
+    hierba3.receiveShadow = true;
+    calle3.receiveShadow = true;
+    calle4.receiveShadow = true;
+    hierba4.receiveShadow = true;
+
+
+    calle1.castShadow = false;
+    hierba1.castShadow = false;
+    calle2.castShadow = false;
+    hierba2.castShadow = false;
+    hierba3.castShadow = false;
+    calle3.castShadow = false;
+    calle4.castShadow = false;
+    hierba4.castShadow = false;
+
     this.add (calle1 ,hierba1, calle2, hierba2, hierba3, calle3, calle4, hierba4);
+
   }
 
 
@@ -227,12 +282,12 @@ class MyScene extends THREE.Scene {
     
     var calle_Material =
     [
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), //right side        
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // bottom side
-       new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide }),
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // back side
+      new THREE.MeshPhongMaterial( { map: texture1}), //right side        
+      new THREE.MeshPhongMaterial( { map: texture1}), // bottom side
+      new THREE.MeshPhongMaterial( { map: texture}),
+      new THREE.MeshPhongMaterial( { map: texture1}), // front side
+      new THREE.MeshPhongMaterial( { map: texture1}), // front side
+      new THREE.MeshPhongMaterial( { map: texture1}), // back side
 
     ]
     var material_street = new THREE.MeshFaceMaterial(calle_Material); 
@@ -262,12 +317,12 @@ class MyScene extends THREE.Scene {
 
     var hierba_Material = 
     [      
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), //right side        
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // bottom side
-       new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide }),
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
-       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // back side
+      new THREE.MeshPhongMaterial( { map: texture1}), //right side        
+      new THREE.MeshPhongMaterial( { map: texture1}), // bottom side
+      new THREE.MeshPhongMaterial( { map: texture}),
+      new THREE.MeshPhongMaterial( { map: texture1}), // front side
+      new THREE.MeshPhongMaterial( { map: texture1}), // front side
+      new THREE.MeshPhongMaterial( { map: texture1}), // back side
     ]
 
     var material_grass = new THREE.MeshFaceMaterial(hierba_Material); 
@@ -326,9 +381,9 @@ class MyScene extends THREE.Scene {
     var hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 4);
     this.add(hemiLight);
 
-    this.spotLight = new THREE.SpotLight(0xffa95c, 4);
+    this.spotLight = new THREE.SpotLight(0xffa95c, 10);
+    this.spotLight.position.set( 410, 60, 40 );
     this.spotLight.castShadow = true;
-
     this.add(this.spotLight);
  
   }
@@ -345,9 +400,12 @@ class MyScene extends THREE.Scene {
     // Se recibe el lienzo sobre el que se van a hacer los renderizados. Un div definido en el html.
     
     // Se instancia un Renderer   WebGL
-    var renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer({
+      antialias: true,
+    });
     renderer.toneMapping = THREE.ReinhardToneMapping;
     renderer.toneMappingExposure = 2.3;
+    
     // Se establece un color de fondo en las imágenes que genera el render
     renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
     
@@ -396,14 +454,10 @@ class MyScene extends THREE.Scene {
 
   update () {
     
-    if (this.stats) this.stats.update();   
+    if (this.stats) this.stats.update();  
 
 
-    this.spotLight.position.set(
-      this.camera.position.x + 10,
-      this.camera.position.y + 10,
-      this.camera.position.z + 10
-    );
+    
 
 
     this.renderer.render (this, this.camera); 
@@ -551,6 +605,12 @@ $(function () {
   // Se instancia la escena pasándole el  div  que se ha creado en el html para visualizar
   var scene = new MyScene("#WebGL-output");
 
+  scene.coche1.traverse(n => {
+      
+      n.castShadow = true;
+      n.receiveShadow = true;   
+      
+  })
 
   //Coche1
   scene.coche1.translateY(0.6); 
@@ -859,6 +919,8 @@ $(function () {
 
   scene.background = skybox;
 
+  console.log(scene);
+  
 
 });
 

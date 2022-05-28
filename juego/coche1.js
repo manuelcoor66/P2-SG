@@ -18,7 +18,8 @@ class Coche1 extends THREE.Object3D {
           objeto.setMaterials(materiales);
           objeto.load('../models/P2/coche1/coche1.obj',
             function(objeto){
-            objeto.scale.setScalar(5);
+              objeto.traverse(function(child){child.castShadow = true;})
+              objeto.scale.setScalar(5);
               var obj = objeto;
               that.add(obj);
             },
