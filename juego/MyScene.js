@@ -4,13 +4,13 @@ import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 import { Stats } from '../libs/stats.module.js'
-import { MTLLoader } from '../libs/MTLLoader.js'
-import { OBJLoader } from '../libs/OBJLoader.js'
 import * as TWEEN from '../libs/tween.esm.js'
 import * as COCHE from './coche1.js'
 import * as CAMION from './camion1.js'
 import * as CAMION2 from './camion2.js'
-import { MyBox } from './MyBox.js'
+import * as ARBOL1 from './arbol1.js'
+import * as ARBOL2 from './arbol2.js'
+import * as ARBOL3 from './arbol3.js'
 
 // Clases de mi proyecto
 import { MyPersonaje } from './MyPersonaje.js'
@@ -56,22 +56,16 @@ class MyScene extends THREE.Scene {
     this.add(this.personaje);
  
     this.coche1 = new COCHE.Coche1();
-    
     this.add (this.coche1);
     
-
     this.camion1 = new CAMION2.Camion2();  
     this.add (this.camion1);
-
 
     this.coche2 = new COCHE.Coche1();    
     this.add (this.coche2);
     
     this.camion2 = new CAMION.Camion1();    
     this.add (this.camion2);
-
-
-
 
     this.camion3 = new CAMION2.Camion2();
     this.add (this.camion3);
@@ -81,7 +75,6 @@ class MyScene extends THREE.Scene {
 
     this.coche3 = new COCHE.Coche1();
     this.add (this.coche3);
-
 
     this.camion5 = new CAMION2.Camion2();
     this.add (this.camion5);
@@ -94,6 +87,20 @@ class MyScene extends THREE.Scene {
 
     this.camion6 = new CAMION.Camion1();
     this.add (this.camion6);
+
+    this.arbol1 = new ARBOL1.Arbol1();
+    this.add(this.arbol1);
+
+    this.arbol2 = new ARBOL2.Arbol2();
+    this.add(this.arbol2);
+
+    this.arbol3 = new ARBOL3.Arbol3();
+    this.add(this.arbol3);
+
+    
+
+
+  
 
 
     this.initStats();
@@ -378,11 +385,11 @@ class MyScene extends THREE.Scene {
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
    
-    var hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 4);
+    var hemiLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
     this.add(hemiLight);
 
     this.spotLight = new THREE.SpotLight(0xffa95c, 10);
-    this.spotLight.position.set( 410, 60, 40 );
+    this.spotLight.position.set(410, 90, 40);
     this.spotLight.castShadow = true;
     this.add(this.spotLight);
  
@@ -606,15 +613,12 @@ $(function () {
   var scene = new MyScene("#WebGL-output");
 
   scene.coche1.traverse(n => {
-      
       n.castShadow = true;
       n.receiveShadow = true;   
-      
   })
 
   //Coche1
   scene.coche1.translateY(0.6); 
-
   var movement = new TWEEN.Tween(origen).to(destino, 5000)
   movement.easing(TWEEN.Easing.Linear.None)
   movement.onUpdate(() => {
@@ -664,9 +668,8 @@ $(function () {
     movement4.repeat(Infinity)
     movement4.start()
 
-    //camion3
-  scene.camion3.translateY(0.6);
-  
+  //camion3
+  scene.camion3.translateY(0.6);  
   var movement5 = new TWEEN.Tween(origen).to(destino, 3000)
   movement5.easing(TWEEN.Easing.Linear.None)
   movement5.onUpdate(() => {
@@ -677,7 +680,7 @@ $(function () {
     movement5.repeat(Infinity)
     movement5.start()
 
-    //camion4
+  //camion4
   scene.camion4.translateY(0.6);
   scene.camion4.rotateY(Math.PI);
   var movement6 = new TWEEN.Tween(origen).to(destino, 1000)
@@ -690,7 +693,7 @@ $(function () {
     movement6.repeat(Infinity)
     movement6.start()
 
-    //coche3
+  //coche3
   scene.coche3.translateY(0.6);
   scene.coche3.rotateY(Math.PI);
   var movement7 = new TWEEN.Tween(origen).to(destino, 4000)
@@ -703,7 +706,7 @@ $(function () {
     movement7.repeat(Infinity)
     movement7.start()
 
-    //camion5
+  //camion5
   scene.camion5.translateY(0.6);
   var movement8 = new TWEEN.Tween(origen).to(destino, 3500)
   movement8.easing(TWEEN.Easing.Linear.None)
@@ -715,33 +718,33 @@ $(function () {
     movement8.repeat(Infinity)
     movement8.start()
 
-    //coche4
-    scene.coche4.translateY(0.6);
-    var movement9 = new TWEEN.Tween(origen).to(destino, 1500)
-    movement9.easing(TWEEN.Easing.Linear.None)
-    movement9.onUpdate(() => {
-        var posicion3 = curva9.getPointAt(origen.p)
-        scene.coche4.position.copy(posicion3)
-      })
-      movement9.onComplete(() => {origen.p = 0;})
-      movement9.repeat(Infinity)
-      movement9.start()
+  //coche4
+  scene.coche4.translateY(0.6);
+  var movement9 = new TWEEN.Tween(origen).to(destino, 1500)
+  movement9.easing(TWEEN.Easing.Linear.None)
+  movement9.onUpdate(() => {
+      var posicion3 = curva9.getPointAt(origen.p)
+      scene.coche4.position.copy(posicion3)
+    })
+    movement9.onComplete(() => {origen.p = 0;})
+    movement9.repeat(Infinity)
+    movement9.start()
 
 
-    //coche5
-    scene.coche5.translateY(0.6);
-    scene.coche5.rotateY(Math.PI);
-    var movement10 = new TWEEN.Tween(origen).to(destino, 4000)
-    movement10.easing(TWEEN.Easing.Linear.None)
-    movement10.onUpdate(() => {
-        var posicion3 = curva10.getPointAt(origen.p)
-        scene.coche5.position.copy(posicion3)
-      })
-      movement10.onComplete(() => {origen.p = 0;})
-      movement10.repeat(Infinity)
-      movement10.start()
+  //coche5
+  scene.coche5.translateY(0.6);
+  scene.coche5.rotateY(Math.PI);
+  var movement10 = new TWEEN.Tween(origen).to(destino, 4000)
+  movement10.easing(TWEEN.Easing.Linear.None)
+  movement10.onUpdate(() => {
+      var posicion3 = curva10.getPointAt(origen.p)
+      scene.coche5.position.copy(posicion3)
+    })
+    movement10.onComplete(() => {origen.p = 0;})
+    movement10.repeat(Infinity)
+    movement10.start()
 
-    //camion6
+  //camion6
   scene.camion6.translateY(0.6);
   var movement11 = new TWEEN.Tween(origen).to(destino, 3500)
   movement11.easing(TWEEN.Easing.Linear.None)
@@ -753,13 +756,25 @@ $(function () {
     movement11.repeat(Infinity)
     movement11.start()
 
+    
+  scene.arbol1.translateY(-0.6);
+  scene.arbol1.translateX(20);
+  scene.arbol1.translateZ(25);
+
+  scene.arbol2.translateY(-0.6);
+  scene.arbol2.translateX(80);
+  scene.arbol2.translateZ(-15);
+  
+  scene.arbol3.translateY(-0.6);
+  scene.arbol3.translateX(110);
+  scene.arbol3.translateZ(30);
+  scene.arbol3.rotateY(Math.PI/2);
+
 
   function updateAnimaciones() {
     TWEEN.update();
     requestAnimationFrame(updateAnimaciones);
   }
-
-
 
   updateAnimaciones()
   colision1()
@@ -773,6 +788,10 @@ $(function () {
   colision9()
   colision10()
   colision11()
+  colision12()
+  colision13()
+  colision14()
+
   function colision1(){
     if(intersectBoxes(scene.personaje, scene.coche1))    
     location.reload(); 
@@ -783,7 +802,6 @@ $(function () {
     if(intersectBoxes2(scene.personaje, scene.camion1)){      
       location.reload(); 
     }
-    
     requestAnimationFrame(colision2);
   }
 
@@ -817,9 +835,6 @@ $(function () {
     requestAnimationFrame(colision7);
   }
 
-
-
-
   function colision8(){
     if(intersectBoxes2(scene.personaje, scene.camion5))
     location.reload(); 
@@ -844,6 +859,24 @@ $(function () {
     requestAnimationFrame(colision11);
   }
 
+  function colision12(){
+    if(intersectBoxes3(scene.personaje, scene.arbol1)) {
+      location.reload(); 
+    }
+    requestAnimationFrame(colision12);
+  }
+
+  function colision13(){
+    if(intersectBoxes3(scene.personaje, scene.arbol2))
+    location.reload(); 
+    requestAnimationFrame(colision13);
+  }
+
+  function colision14(){
+    if(intersectBoxes3(scene.personaje, scene.arbol3))
+    location.reload(); 
+    requestAnimationFrame(colision14);
+  }
 
 
     
@@ -862,8 +895,16 @@ $(function () {
                                    new THREE.Vector2 (b2.position.x, b2.position.z));
     return (vectorBetweenBoxes.length() < 10);
   }
+ 
+  function intersectBoxes3 (b1, b2) {
+    var vectorBetweenBoxes = new THREE.Vector2();
+   
+    vectorBetweenBoxes.subVectors (new THREE.Vector2 (b1.position.x, b1.position.z),
+                                   new THREE.Vector2 (b2.position.x, b2.position.z));
+    return (vectorBetweenBoxes.length() < 4);
+  }
 
-    ComprobarFinal();
+  ComprobarFinal();
   function ComprobarFinal(){
     if(scene.personaje.position.x > 350){
       location.reload(); 
@@ -923,6 +964,3 @@ $(function () {
   
 
 });
-
-
-
