@@ -155,10 +155,53 @@ class MyScene extends THREE.Scene {
     calle3.position.x = +250;
     calle4.position.x = +300;  
 
+    var hierba4 = this.createHierba();
+    hierba4.position.y = -25;
+    hierba4.position.x = +350;
+    /*var linea_de_meta = this.createLineaFinal();
+    //linea_de_meta.position.y = 0.25;
+    linea_de_meta.position.x = +350;*/
     
     // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (calle1 ,hierba1, calle2, hierba2, hierba3, calle3, calle4);
+    this.add (calle1 ,hierba1, calle2, hierba2, hierba3, calle3, calle4, hierba4);
   }
+
+
+  /*createLineaFinal () {
+
+    var loader = new THREE.TextureLoader();
+    var texture = loader.load( 'texturas/ajedrez.jpg', function ( texture ) {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.offset.set( 0, 0 );
+    texture.repeat.set( 10, 10 );
+    } );
+
+
+    var loader1 = new THREE.TextureLoader();
+    var texture1 = loader1.load( 'texturas/grass-m.jpg', function ( texture1 ) {
+    texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
+    texture1.offset.set( 0, 0 );
+    texture1.repeat.set( 15, 15 );
+    } );
+
+    var geometryLinea = new THREE.BoxGeometry (20,10,80);
+    
+    var Linea_Material =
+    [
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), //right side        
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // bottom side
+       new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide }),
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
+       new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // back side
+
+    ]
+    var material_Linea = new THREE.MeshFaceMaterial(Linea_Material); 
+    var Linea = new THREE.Mesh (geometryLinea, material_Linea);
+
+    return Linea;
+
+  }*/
 
 
 
@@ -271,24 +314,23 @@ class MyScene extends THREE.Scene {
     // La luz ambiental solo tiene un color y una intensidad
     // Se declara como   var   y va a ser una variable local a este método
     //    se hace así puesto que no va a ser accedida desde otros métodos
-    var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+   // var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
     // La añadimos a la escena
-    this.add (ambientLight);
+    //this.add (ambientLight);
     
     // Se crea una luz focal que va a ser la luz principal de la escena
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
+   
+    var hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 4);
+    this.add(hemiLight);
 
-    this.spotLight = new THREE.SpotLight(0xfcfcfc, 0.7);
-    this.spotLight.position.set(2, 30, 5);
+    this.spotLight = new THREE.SpotLight(0xffa95c, 4);
+    this.spotLight.castShadow = true;
 
-    var target = new THREE.Object3D();
-    target.position.set(2, 0, 5);
-    this.spotLight.target = target;
-
-    this.add(target);
     this.add(this.spotLight);
+ 
   }
   
   setLightIntensity (valor) {
@@ -304,7 +346,8 @@ class MyScene extends THREE.Scene {
     
     // Se instancia un Renderer   WebGL
     var renderer = new THREE.WebGLRenderer();
-    
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 2.3;
     // Se establece un color de fondo en las imágenes que genera el render
     renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
     
@@ -353,19 +396,17 @@ class MyScene extends THREE.Scene {
 
   update () {
     
-    if (this.stats) this.stats.update();    
+    if (this.stats) this.stats.update();   
 
-    
-    // Se actualiza el resto del modelo
-    // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
+
+    this.spotLight.position.set(
+      this.camera.position.x + 10,
+      this.camera.position.y + 10,
+      this.camera.position.z + 10
+    );
+
+
     this.renderer.render (this, this.camera); 
-
-    
-    
-    
-    // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
-    // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
-    // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update());
 
   }
@@ -404,18 +445,24 @@ class MyScene extends THREE.Scene {
   }
 }
 
+
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+//////////////////////
+
+
 var X_ant = 0;
 
-
-
-
 var xSpeed= 1.0;
-var salto = 5.0;
-
-
-var clock = new THREE.Clock();
-
-
 
 //Movimiento Coches
 
@@ -667,14 +714,16 @@ $(function () {
   colision10()
   colision11()
   function colision1(){
-    if(intersectBoxes(scene.personaje, scene.coche1))
+    if(intersectBoxes(scene.personaje, scene.coche1))    
     location.reload(); 
     requestAnimationFrame(colision1);
   }
   
   function colision2(){
-    if(intersectBoxes2(scene.personaje, scene.camion1))
-    location.reload(); 
+    if(intersectBoxes2(scene.personaje, scene.camion1)){      
+      location.reload(); 
+    }
+    
     requestAnimationFrame(colision2);
   }
 
@@ -752,6 +801,14 @@ $(function () {
     vectorBetweenBoxes.subVectors (new THREE.Vector2 (b1.position.x, b1.position.z),
                                    new THREE.Vector2 (b2.position.x, b2.position.z));
     return (vectorBetweenBoxes.length() < 10);
+  }
+
+    ComprobarFinal();
+  function ComprobarFinal(){
+    if(scene.personaje.position.x > 350){
+      location.reload(); 
+    }
+    requestAnimationFrame(ComprobarFinal);
   }
 
 
