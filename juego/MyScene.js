@@ -56,6 +56,32 @@ class MyScene extends THREE.Scene {
     this.camion2 = new CAMION.Camion1();
     this.add (this.camion2);
 
+
+
+
+    this.camion3 = new CAMION2.Camion2();
+    this.add (this.camion3);
+
+    this.camion4 = new CAMION.Camion1();
+    this.add (this.camion4);
+
+    this.coche3 = new COCHE.Coche1();
+    this.add (this.coche3);
+
+
+    this.camion5 = new CAMION2.Camion2();
+    this.add (this.camion5);
+
+    this.coche4 = new COCHE.Coche1();
+    this.add (this.coche4);
+
+    this.coche5 = new COCHE.Coche1();
+    this.add (this.coche5);
+
+    this.camion6 = new CAMION.Camion1();
+    this.add (this.camion6);
+
+
     this.initStats();
     //intento recrear la cámara
 
@@ -119,9 +145,19 @@ class MyScene extends THREE.Scene {
     hierba2.position.x = +100;
     calle2.position.x = +150; 
 
+    var hierba3 = this.createHierba();
+    var calle3 = this.createCalle();
+    var calle4 = this.createCalle();
+    hierba3.position.y = -25;
+    calle3.position.y = -25;
+    calle4.position.y = -25;
+    hierba3.position.x = +200;
+    calle3.position.x = +250;
+    calle4.position.x = +300;  
+
     
     // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (calle1 ,hierba1, calle2, hierba2);
+    this.add (calle1 ,hierba1, calle2, hierba2, hierba3, calle3, calle4);
   }
 
 
@@ -362,8 +398,8 @@ class MyScene extends THREE.Scene {
   onMouseClick (event) {
     switch(event.which) {
       case 1:
-        this.personaje.position.x += 3;
-        this.camera.position.x += 3;
+        this.personaje.position.x += 8;
+        this.camera.position.x += 8;
     }
   }
 }
@@ -403,10 +439,55 @@ var path4 = [
   new THREE.Vector3(160, 0, -80),
 ];
 
+var path5 = [
+  new THREE.Vector3(240, 0, -80),
+  new THREE.Vector3(240, 0, 80),
+];
+
+var path6 = [
+  new THREE.Vector3(250, 0, 80),
+  new THREE.Vector3(250, 0, -80),
+];
+
+var path7 = [
+  new THREE.Vector3(260, 0, 80),
+  new THREE.Vector3(260, 0, -80),
+];
+
+var path8 = [
+  new THREE.Vector3(270, 0, -80),
+  new THREE.Vector3(270, 0, 80),
+];
+
+var path9 = [
+  new THREE.Vector3(280, 0, -80),
+  new THREE.Vector3(280, 0, 80),
+];
+
+
+var path10 = [
+  new THREE.Vector3(290, 0, 80),
+  new THREE.Vector3(290, 0, -80),
+];
+
+var path11 = [
+  new THREE.Vector3(300, 0, -80),
+  new THREE.Vector3(300, 0, 80),
+];
+
+
+
 var curva = new THREE.CatmullRomCurve3(path);
 var curva2 = new THREE.CatmullRomCurve3(path2);
 var curva3 = new THREE.CatmullRomCurve3(path3);
 var curva4 = new THREE.CatmullRomCurve3(path4);
+var curva5 = new THREE.CatmullRomCurve3(path5);
+var curva6 = new THREE.CatmullRomCurve3(path6);
+var curva7 = new THREE.CatmullRomCurve3(path7);
+var curva8 = new THREE.CatmullRomCurve3(path8);
+var curva9 = new THREE.CatmullRomCurve3(path9);
+var curva10 = new THREE.CatmullRomCurve3(path10);
+var curva11 = new THREE.CatmullRomCurve3(path11);
 
 var origen = {p: 0}
   var destino = {p: 1}
@@ -476,6 +557,95 @@ $(function () {
     movement4.repeat(Infinity)
     movement4.start()
 
+    //camion3
+  scene.camion3.translateY(0.6);
+  
+  var movement5 = new TWEEN.Tween(origen).to(destino, 3000)
+  movement5.easing(TWEEN.Easing.Linear.None)
+  movement5.onUpdate(() => {
+      var posicion = curva5.getPointAt(origen.p)
+      scene.camion3.position.copy(posicion)
+    })
+    movement5.onComplete(() => {origen.p = 0;})
+    movement5.repeat(Infinity)
+    movement5.start()
+
+    //camion4
+  scene.camion4.translateY(0.6);
+  scene.camion4.rotateY(Math.PI);
+  var movement6 = new TWEEN.Tween(origen).to(destino, 1000)
+  movement6.easing(TWEEN.Easing.Linear.None)
+  movement6.onUpdate(() => {
+      var posicion = curva6.getPointAt(origen.p)
+      scene.camion4.position.copy(posicion)
+    })
+    movement6.onComplete(() => {origen.p = 0;})
+    movement6.repeat(Infinity)
+    movement6.start()
+
+    //coche3
+  scene.coche3.translateY(0.6);
+  scene.coche3.rotateY(Math.PI);
+  var movement7 = new TWEEN.Tween(origen).to(destino, 4000)
+  movement7.easing(TWEEN.Easing.Linear.None)
+  movement7.onUpdate(() => {
+      var posicion3 = curva7.getPointAt(origen.p)
+      scene.coche3.position.copy(posicion3)
+    })
+    movement7.onComplete(() => {origen.p = 0;})
+    movement7.repeat(Infinity)
+    movement7.start()
+
+    //camion5
+  scene.camion5.translateY(0.6);
+  var movement8 = new TWEEN.Tween(origen).to(destino, 3500)
+  movement8.easing(TWEEN.Easing.Linear.None)
+  movement8.onUpdate(() => {
+      var posicion = curva8.getPointAt(origen.p)
+      scene.camion5.position.copy(posicion)
+    })
+    movement8.onComplete(() => {origen.p = 0;})
+    movement8.repeat(Infinity)
+    movement8.start()
+
+    //coche4
+    scene.coche4.translateY(0.6);
+    var movement9 = new TWEEN.Tween(origen).to(destino, 1500)
+    movement9.easing(TWEEN.Easing.Linear.None)
+    movement9.onUpdate(() => {
+        var posicion3 = curva9.getPointAt(origen.p)
+        scene.coche4.position.copy(posicion3)
+      })
+      movement9.onComplete(() => {origen.p = 0;})
+      movement9.repeat(Infinity)
+      movement9.start()
+
+
+    //coche5
+    scene.coche5.translateY(0.6);
+    scene.coche5.rotateY(Math.PI);
+    var movement10 = new TWEEN.Tween(origen).to(destino, 4000)
+    movement10.easing(TWEEN.Easing.Linear.None)
+    movement10.onUpdate(() => {
+        var posicion3 = curva10.getPointAt(origen.p)
+        scene.coche5.position.copy(posicion3)
+      })
+      movement10.onComplete(() => {origen.p = 0;})
+      movement10.repeat(Infinity)
+      movement10.start()
+
+    //camion6
+  scene.camion6.translateY(0.6);
+  var movement11 = new TWEEN.Tween(origen).to(destino, 3500)
+  movement11.easing(TWEEN.Easing.Linear.None)
+  movement11.onUpdate(() => {
+      var posicion = curva11.getPointAt(origen.p)
+      scene.camion6.position.copy(posicion)
+    })
+    movement11.onComplete(() => {origen.p = 0;})
+    movement11.repeat(Infinity)
+    movement11.start()
+
 
   function updateAnimaciones() {
     TWEEN.update();
@@ -489,6 +659,13 @@ $(function () {
   colision2()
   colision3()
   colision4()
+  colision5()
+  colision6()
+  colision7()
+  colision8()
+  colision9()
+  colision10()
+  colision11()
   function colision1(){
     if(intersectBoxes(scene.personaje, scene.coche1))
     location.reload(); 
@@ -512,6 +689,53 @@ $(function () {
     location.reload(); 
     requestAnimationFrame(colision4);
   }
+
+  function colision5(){
+    if(intersectBoxes2(scene.personaje, scene.camion3))
+    location.reload(); 
+    requestAnimationFrame(colision5);
+  }
+
+  function colision6(){
+    if(intersectBoxes2(scene.personaje, scene.camion4))
+    location.reload(); 
+    requestAnimationFrame(colision6);
+  }
+
+  function colision7(){
+    if(intersectBoxes(scene.personaje, scene.coche3))
+    location.reload(); 
+    requestAnimationFrame(colision7);
+  }
+
+
+
+
+  function colision8(){
+    if(intersectBoxes2(scene.personaje, scene.camion5))
+    location.reload(); 
+    requestAnimationFrame(colision8);
+  }
+
+  function colision9(){
+    if(intersectBoxes(scene.personaje, scene.coche4))
+    location.reload(); 
+    requestAnimationFrame(colision9);
+  }
+
+  function colision10(){
+    if(intersectBoxes(scene.personaje, scene.coche5))
+    location.reload(); 
+    requestAnimationFrame(colision10);
+  }
+
+  function colision11(){
+    if(intersectBoxes2(scene.personaje, scene.camion6))
+    location.reload(); 
+    requestAnimationFrame(colision11);
+  }
+
+
 
     
   function intersectBoxes (b1, b2) {
