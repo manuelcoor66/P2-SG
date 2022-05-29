@@ -11,6 +11,9 @@ import * as CAMION2 from './camion2.js'
 import * as ARBOL1 from './arbol1.js'
 import * as ARBOL2 from './arbol2.js'
 import * as ARBOL3 from './arbol3.js'
+import * as ARBOL4 from './arbol4.js'
+import * as ARBOL5 from './arbol5.js'
+import * as ARBOL6 from './arbol6.js'
 
 // Clases de mi proyecto
 import { MyPersonaje } from './MyPersonaje.js'
@@ -97,9 +100,14 @@ class MyScene extends THREE.Scene {
     this.arbol3 = new ARBOL3.Arbol3();
     this.add(this.arbol3);
 
-    
+    this.arbol4 = new ARBOL4.Arbol4();
+    this.add(this.arbol4);
 
+    this.arbol5 = new ARBOL5.Arbol5();
+    this.add(this.arbol5);
 
+    this.arbol6 = new ARBOL6.Arbol6();
+    this.add(this.arbol6);
   
 
 
@@ -230,22 +238,18 @@ class MyScene extends THREE.Scene {
 
 
   /*createLineaFinal () {
-
     var loader = new THREE.TextureLoader();
     var texture = loader.load( 'texturas/ajedrez.jpg', function ( texture ) {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     texture.offset.set( 0, 0 );
     texture.repeat.set( 10, 10 );
     } );
-
-
     var loader1 = new THREE.TextureLoader();
     var texture1 = loader1.load( 'texturas/grass-m.jpg', function ( texture1 ) {
     texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
     texture1.offset.set( 0, 0 );
     texture1.repeat.set( 15, 15 );
     } );
-
     var geometryLinea = new THREE.BoxGeometry (20,10,80);
     
     var Linea_Material =
@@ -256,13 +260,10 @@ class MyScene extends THREE.Scene {
        new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
        new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // front side
        new THREE.MeshBasicMaterial( { map: texture1, side: THREE.DoubleSide }), // back side
-
     ]
     var material_Linea = new THREE.MeshFaceMaterial(Linea_Material); 
     var Linea = new THREE.Mesh (geometryLinea, material_Linea);
-
     return Linea;
-
   }*/
 
 
@@ -463,13 +464,8 @@ class MyScene extends THREE.Scene {
     
     if (this.stats) this.stats.update();  
 
-
-    
-
-
     this.renderer.render (this, this.camera); 
     requestAnimationFrame(() => this.update());
-
   }
 
   getMouse(event){
@@ -599,11 +595,6 @@ var curva11 = new THREE.CatmullRomCurve3(path11);
 
 var origen = {p: 0}
   var destino = {p: 1}
-
-
-  
-    
-
 
 
 /// La función   main
@@ -758,7 +749,7 @@ $(function () {
 
     
   scene.arbol1.translateY(-0.6);
-  scene.arbol1.translateX(20);
+  scene.arbol1.translateX(15);
   scene.arbol1.translateZ(25);
 
   scene.arbol2.translateY(-0.6);
@@ -769,7 +760,17 @@ $(function () {
   scene.arbol3.translateX(110);
   scene.arbol3.translateZ(30);
   scene.arbol3.rotateY(Math.PI/2);
-
+  
+  scene.arbol4.translateY(-0.6);
+  scene.arbol4.translateX(190);
+  scene.arbol4.translateZ(-30);
+  
+  scene.arbol5.translateY(-0.6);
+  scene.arbol5.translateX(210);
+  
+  scene.arbol6.translateY(-0.6);
+  scene.arbol6.translateX(200);
+  scene.arbol6.translateZ(35);
 
   function updateAnimaciones() {
     TWEEN.update();
@@ -791,6 +792,9 @@ $(function () {
   colision12()
   colision13()
   colision14()
+  colision15()
+  colision16()
+  colision17()
 
   function colision1(){
     if(intersectBoxes(scene.personaje, scene.coche1))    
@@ -876,6 +880,24 @@ $(function () {
     if(intersectBoxes3(scene.personaje, scene.arbol3))
     location.reload(); 
     requestAnimationFrame(colision14);
+  }
+
+  function colision15(){
+    if(intersectBoxes3(scene.personaje, scene.arbol4))
+    location.reload(); 
+    requestAnimationFrame(colision15);
+  }
+
+  function colision16(){
+    if(intersectBoxes3(scene.personaje, scene.arbol5))
+    location.reload(); 
+    requestAnimationFrame(colision16);
+  }
+
+  function colision17(){
+    if(intersectBoxes3(scene.personaje, scene.arbol6))
+    location.reload(); 
+    requestAnimationFrame(colision17);
   }
 
 

@@ -7,7 +7,30 @@ class MyPersonaje extends THREE.Object3D {
 	constructor(gui) {
 		super();
 
-		this.animal = this.crearAnimal();			
+		this.cabeza = this.crearCabeza()
+		this.cuerpo = this.crearCuerpo();
+		this.pata1 = this.crearPata();
+		this.pata2 = this.crearPata();
+		this.ala1 = this.crearAla();
+		this.ala2 = this.crearAla();
+
+
+		this.pata1.translateY(-((0.25/2)+1.25));
+		this.pata2.translateY(-((0.25/2)+1.25));
+		this.cuerpo.translateY(2.175);
+		this.ala1.translateY(2.175+0.75);
+		this.ala2.translateY(2.175+0.75);
+		this.cabeza.translateY(2.9);
+		this.cabeza.translateX(1.75);
+
+		this.pata1.translateZ(0.5);
+		this.pata2.translateZ(-0.5);
+		this.ala1.translateZ(1.125);
+		this.ala2.translateZ(-1.125);
+
+		this.animal = new THREE.Object3D();
+		this.animal.add(this.pata1, this.pata2, this.cuerpo, this.ala1, this.ala2, this.cabeza);
+
 		this.add(this.animal);
 	}
 
@@ -114,8 +137,14 @@ class MyPersonaje extends THREE.Object3D {
 		return final;
 	}
 
+	/*desplazarAla1_1() {
+		this.ala1.rotateY(Math.PI);
+		this.ala1.translateY(2);
+	}
 
-
+	desplazarAla1_2() {
+		this.ala1.rotateX(Math.PI/2);
+	}*/
 	
 }
 
